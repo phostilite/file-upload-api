@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from botocore.exceptions import ClientError
 import re
 
-from src.config import Config, configure_logging
+from src.config import Config, configure_logging, get_config
 from src.exceptions import APIError
 from src.utils.file_utils import (
     allowed_file, sanitize_filename, get_file_metadata,
@@ -15,7 +15,9 @@ from src.utils.security import require_api_key
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config.from_object(Config)
+
+# Load configuration based on FLASK_ENV
+app.config.from_object(get_config())
 
 # Configure logging
 configure_logging(app)
@@ -198,4 +200,4 @@ def get_file_info(file_id):
         return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=(os.getenv('FLASK_ENV') == 'development'))

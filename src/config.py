@@ -28,6 +28,14 @@ class ProductionConfig(Config):
     """Production configuration."""
     DEBUG = False
 
+def get_config():
+    """Load configuration based on FLASK_ENV environment variable."""
+    env = os.getenv('FLASK_ENV', 'production')
+    if env == 'development':
+        return DevelopmentConfig
+    else:
+        return ProductionConfig
+
 # Logging Configuration
 def configure_logging(app):
     """Configure logging for the application."""
